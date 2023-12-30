@@ -12,16 +12,18 @@ export default function BlankNote({
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.CARD,
-    drop: () => setNewNote(),
+    drop: (item: any) => {
+      setNewNote(item.note)
+    },
     collect: monitor => ({
-      isOver: !!monitor.isOver(),
+      isOver: monitor.isOver(),
     }),
   }))
 
   return (
     <div className="
         flex min-w-48 h-48
-        border rounded-lg
+        hover:border rounded-lg
         transition
         hover:shadow-lg cursor-pointer
     "
@@ -29,7 +31,7 @@ export default function BlankNote({
     >
       {
         isOver ?
-        <div className="w-full h-full bg-blue-200 opacity-50"></div>
+        <div className="w-full h-full rounded-lg bg-gray-200 opacity-50"></div>
         :
         null
       }

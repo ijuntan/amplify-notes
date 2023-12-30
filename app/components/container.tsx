@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FilledNote from "./filled_note";
 import BlankNote from "./blank_note";
 import { DndProvider } from 'react-dnd'
@@ -11,41 +11,20 @@ export const ItemTypes = {
 
 export default function Container() {
   const squares = []
-  const [currentNote, setCurrentNote] = useState({
-    id: 0,
-    text: "",
-    position: 0
-  })
+
   const [notes, setNotes] = useState([
     { id:1, text: "Hello", position: 2 },
     { id:2, text: "World", position: 3 },
     { id:3, text: "!",  position: 5 },
   ])
-  
-  const eraseCurrentNote = () => {
-    console.log('erasing', currentNote)
-    setCurrentNote({
-        id: 0,
-        text: "",
-        position: 0
-    })
-  }
-
-  const fillCurrentNote = (note:any) => {
-    setCurrentNote(note || { id: 0, text: "", position: 0})
-  }
 
   for(let i = 0; i < 36; i++) {
     if(notes.some((note) => note.position === i)) {
         const note = notes.find((note) => note.position === i)
         squares.push(
             <FilledNote
-                key={i} 
-                text={note?.text || ""}
-                fillCurrentNote={() => fillCurrentNote(note)}
+                key={i}
                 note={note}
-                setCurrentNote={setCurrentNote}
-                eraseCurrentNote={eraseCurrentNote}
             />
         )
     }
@@ -53,18 +32,15 @@ export default function Container() {
         squares.push(
             <BlankNote
                 key={i}
-                setNewNote={() => {
-                    if(currentNote.id !== 0) {
-                        const index = notes.findIndex((note) => note.id === currentNote.id)
-                        
-                        setNotes(prev => {
-                            const newNotes = [...prev]
-                            newNotes[index].position = i
-                            return newNotes
-                        })
-
-                        eraseCurrentNote()
-                    }
+                setNewNote={(draggedNote: any) => {
+                  console.log(draggedNote)
+                    const index = notes.findIndex((note) => note.id === draggedNote.id)
+                    
+                    setNotes(prev => {
+                        const newNotes = [...prev]
+                        newNotes[index].position = i
+                        return newNotes
+                    })
                 }}
             />
         )

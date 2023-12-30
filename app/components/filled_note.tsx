@@ -8,27 +8,14 @@ import { ItemTypes } from './container'
  */
 
 interface FilledNoteProps {
-  text: string,
-  fillCurrentNote: any,
-  eraseCurrentNote: any,
-
   note: any,
-  setCurrentNote: any
 }
 
-export default function FilledNote({ text, fillCurrentNote, eraseCurrentNote, note, setCurrentNote}: FilledNoteProps) {
-  const [{ opacity }, dragRef] = useDrag(
+export default function FilledNote({ note }: FilledNoteProps) {
+  const [{ opacity }, drag] = useDrag(
     () => ({
       type: ItemTypes.CARD,
-      item: () => {
-        setCurrentNote({
-          id: note.id,
-          text: note.text,
-          position: note.position
-        })
-        return { note } 
-      },
-      //end: () => eraseCurrentNote(),
+      item: () => ({ note }),
       collect: monitor => ({
         opacity: monitor.isDragging() ? 0.5 : 1,
       })
@@ -42,9 +29,9 @@ export default function FilledNote({ text, fillCurrentNote, eraseCurrentNote, no
         hover:shadow-lg cursor-pointer
         ${opacity === 0.5 ? "opacity-50" : "opacity-100"}
     `}
-      ref={dragRef}
+      ref={drag}
     >
-      {text}
+      {note.text}
     </div>
   )
 }
